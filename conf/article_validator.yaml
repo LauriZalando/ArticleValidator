@@ -1,0 +1,539 @@
+swagger: '2.0'
+info:
+  version: 0.0.1_Hackweek4
+  title: ArticleValidator
+  description: |
+    Validates article data against the Zalando Shop schema
+schemes:
+  - http
+host: localhost:9000
+paths:
+  /schema/model:
+    get:
+      responses:
+        200:
+          description: |
+            Schema representing sales channel and merchant
+            specific structure and valid values for models to create articles with.
+          schema:
+            $ref: "#/definitions/ModelSchemaRoot"
+
+definitions:
+
+  ModelSchemaRoot:
+    type: object
+    description: Representation of a schema for a model
+    properties:
+      data:
+        description: The schema object
+        $ref: '#/definitions/ModelSchema'
+      meta:
+        description: Meta object
+        $ref: '#/definitions/Meta'
+      links:
+        description: Links
+        $ref: '#/definitions/Links'
+
+  ModelSchema:
+    type: object
+    description: Schema
+    required:
+      - partnerArticleModelId
+      - silhouetteId
+      - name
+      - brand
+      - ageGroups
+      - sizeRegister
+    properties:
+
+      # --- Required properties ------------------------------------------------------------------->
+
+      partnerArticleModelId:
+        description: ???
+        type: integer
+        format: ???
+      silhouetteId:
+        type: string
+        enum:
+          - ankle_boots
+          - backless_slipper
+          - backpack
+          - bag
+          - ball
+          - ballerina_shoe
+          - bathrobe
+          - bathroom
+          - beach_accessoires
+          - beach_shirt
+          - beach_trouser
+          - beauty_equipment
+          - bedroom
+          - belt
+          - bicycle
+          - bicycle_equipment
+          - bikini_combination
+          - bikini_top
+          - boards
+          - boots
+          - bra
+          - bustier
+          - cardigan
+          - case
+          - cleansing
+          - coat
+          - combination_clothing
+          - corsage
+          - dress
+          - etui
+          - eye_cosmetic
+          - face_cosmetic
+          - first_shoe
+          - fitness
+          - fragrance
+          - glasses
+          - gloves
+          - hair
+          - headgear
+          - headphones
+          - jacket
+          - jewellery
+          - keychain
+          - kitchen
+          - lip_cosmetic
+          - living
+          - lounge
+          - low_shoe
+          - nail
+          - night_shirt
+          - night_trouser
+          - nightdress
+          - nightwear_combination
+          - one_piece_beachwear
+          - one_piece_nightwear
+          - one_piece_suit
+          - one_piece_underwear
+          - other_accessoires
+          - other_equipment
+          - peeling
+          - protector
+          - pullover
+          - pumps
+          - racket
+          - sandals
+          - scarf
+          - shave
+          - shirt
+          - shoe_accessoires
+          - skates
+          - ski
+          - skincare
+          - skirt
+          - sleeping_bag
+          - sneaker
+          - stocking
+          - suit_accessoires
+          - sun
+          - system
+          - t_shirt_top
+          - tent
+          - tights
+          - toys
+          - travel_equipment
+          - trouser
+          - umbrella
+          - underpant
+          - undershirt
+          - underwear_combination
+          - vest
+          - voucher
+          - wallet
+          - watch
+      name:
+        type: string
+        description: Product name
+      brand:
+        description: Zalando brand code
+        type: string
+        minLength: 3
+        maxLength: 3
+        pattern: /[A-Z0-9]{3,3}/
+      ageGroups:
+        type: array
+        items:
+          type: string
+          enum:
+            - baby
+            - kid
+            - teen
+            - adult
+        maxItems: 4
+      sizeRegister:
+        type: string
+        pattern: /[1-9][A-Z0-9]*/
+        minLength: 10
+        maxLength: 10
+
+      # --- Optional properties ------------------------------------------------------------------->
+
+      articleModelAttributes:
+        description: |
+          Optional collection of product attributes - if present at least one attribute is required
+        type: array
+        minItems: 1
+        items:
+          type: string
+      lengthRegister:
+        description: Zalando Product Length Grid
+        type: string
+        pattern: /[1-9][A-Z0-9]*/
+        minLength: 10
+        maxLength: 10
+      keywords:
+        description: |
+          Product Keywords. Comma-Space (', ') separated Keyword List. A keyword may contain letters
+          both upper and lowercase as well as numbers and spaces. Each keyword has a maximum length of 255 characters.
+        type: string
+        pattern: /([\w\s]{1,255}|([\w\s]{1,255}, )+[\w\s]{1,255})/
+      description:
+        type: string
+      specialDescriptions:
+        type: array
+        items:
+          description: |
+            Each
+            occurance of the
+            'specialDescription'
+            node will be
+            transformed
+            into a
+            single line in the
+            Zalando Shop Frontend
+          type: string
+
+  ConfigSchemaRoot:
+    type: object
+    description: Representation of a schema for the config level of an article
+    properties:
+      data:
+        description: The schema object
+        $ref: '#/definitions/ConfigSchema'
+      meta:
+        description: Meta object
+        $ref: '#/definitions/Meta'
+      links:
+        description: Links
+        $ref: '#/definitions/Links'
+
+  ConfigSchema:
+    type: object
+    description: |
+      Collection of Product
+      Configuration that in turn contain Variants
+      termed Articles.
+      An Article Configuration is
+      currently designed as a grouping feature
+      depending largely on the Type
+      of Product(s) it
+      describes. Currently the Configuration contains
+      only the respective Color
+      information as well as
+      color dependent media information such as
+      product images
+    required:
+      - mainColorCode
+      - supplierColor
+      - supplierSKU
+      - genders
+      - season
+      - images
+    properties:
+      # --- Required properties ------------------------------------------------------------------->
+      mainColorCode:
+        description: |
+          This is the color code of the color most used on the respective
+          article simples found in this ArticleConfig instance
+        type: string
+        minLength: 3
+        maxLength: 3
+        pattern: /[0-9]{3,3}/
+        enum:
+          - 205 #orange
+          - 214 #mottled apricot
+          - 215 #mottled orange
+          - 306 #salmon
+          - 216 #burnt orange
+          - 604 #olive
+          - 606 #khaki
+          - 614 #mottled olive
+          - 917 #multi-coloured
+          - 404 #purple
+          - 405 #berry
+          - 406 #dark purple
+          - 407 #mauve
+          - 413 #mottled lilac
+          - 414 #mottled purple
+          - 415 #mottled berry
+          - 416 #mottled dark
+          - 601 #light green
+          - 602 #green
+          - 603 #dark green
+          - 607 #fir
+          - 608 #mint
+          - 912 #neon yellow
+          - 218 #mustard yellow
+          - 701 #light brown
+          - 702 #brown
+          - 703 #dark brown
+          - 705 #ochre
+          - 708 #cognac
+          - 711 #mottled light
+          - 712 #mottled brown
+          - 713 #mottled dark
+          - 715 #mottled ochre
+          - 716 #bronze
+          - 501 #light blue
+          - 502 #blue
+          - 503 #dark blue
+          - 504 #royal blue
+          - 506 #blue-grey
+          - 511 #mottled light
+          - 512 #mottled blue
+          - 513 #mottled dark
+          - 514 #mottled royal
+          - 901 #light-blue
+          - 903 #dark-blue
+          - 905 #stone blue
+          - 911 #moon washed
+          - 914 #neon blue
+          - 952 #blue denim
+          - 954 #rinsed
+          - 957 #raw denim
+          - 959 #white denim
+          - 960 #selvage denim
+          - 961 #bleached denim
+          - 962 #metallic blue
+          - 963 #blue-black
+          - 964 #dyed denim
+          - 965 #laser denim
+          - 966 #dirty denim
+          - 967 #coated denim
+          - 968 #destroyed denim
+          - 704 #beige
+          - 707 #taupe
+          - 709 #sand
+          - 710 #camel
+          - 714 #mottled beige
+          - 717 #tan
+          - 918 #not defined
+          - 969 #used denim
+          - 403 #lilac
+          - 955 #black denim
+          - 001 #white
+          - 003 #off-white
+          - 010 #transparent
+          - 958 #coloured denim
+          - 505 #turquoise
+          - 515 #mottled turquoise
+          - 104 #silver
+          - 801 #anthracite
+          - 802 #black
+          - 811 #mottled anthracite
+          - 812 #mottled black
+          - 859 #metallic black
+          - 301 #light red
+          - 302 #red
+          - 303 #dark red
+          - 304 #bordeaux
+          - 305 #coral
+          - 311 #mottled light
+          - 312 #mottled red
+          - 313 #mottled dark
+          - 314 #mottled bordeaux
+          - 706 #copper
+          - 315 #metallic red
+          - 401 #rose
+          - 402 #pink
+          - 411 #mottled rose
+          - 412 #mottled pink
+          - 915 #neon pink
+          - 916 #nude
+          - 605 #petrol
+          - 615 #mottled teal
+          - 204 #apricot
+          - 611 #mottled light
+          - 612 #mottled green
+          - 613 #mottled dark
+          - 913 #neon green
+          - 616 #metallic green
+          - 101 #light grey
+          - 102 #grey
+          - 103 #dark grey
+          - 105 #stone
+          - 111 #mottled light
+          - 112 #mottled grey
+          - 113 #mottled dark
+          - 956 #grey denim
+          - 114 #metallic grey
+          - 115 #gunmetal
+          - 206 #gold
+          - 217 #rose gold
+          - 201 #light yellow
+          - 202 #yellow
+          - 203 #dark yellow
+          - 211 #mottled light
+          - 212 #mottled yellow
+          - 213 #mottled dark
+      supplierColor:
+        description: |
+          This is the color that was provided by the articles manufacturer or
+          supplier.
+        type: string
+        minLength: 3
+        maxLength: 50
+      supplierSKU:
+        description: |
+          Supplier SKU of ArticleConfig valid for specific color scheme of
+          Article described by ArticleConfig
+        type: string
+      genders:
+        description: |
+          Genders for which to
+          Product is sold. Multiple Genders
+          are possible
+        type: array
+        items:
+          type: string
+          enum:
+            - female
+            - male
+        maxItems: 2
+      season:
+        description: |
+          Available
+          Seasons
+          are: HW[XX] -
+          "Herbst-Winter"
+          (Fall/Winter)
+          where as XX
+          represents the year as two
+          digit
+          number, FS[XX] -
+          "Frühjahr-Sommer"
+          (Spring/Summer) where as XX
+          represents the year as two
+          digit
+          number, NOS (Never
+          Out
+          of Stock) - can always be
+          sold
+        type: array
+        items:
+          type: string
+          minLength: 3
+          maxLength: 4
+          pattern: /((HW|FS)[0-9]{2,2}|NOS|HWBASIS|FSBASIS|GANZJAHR|AUTUMN_WINTER_BASICS|SPRING_SUMMER_BASICS|YEAR_ROUND_BASICS)/
+      images:
+        type: array
+        items:
+          type: object
+          description: A single Article Image with its sort order index and url
+          properties:
+            sortOrder:
+              type: number
+              maximum: 7
+              minimum: 1
+            url:
+              type: string
+              format: url
+        maxItems: 7
+
+      # --- Optional properties ------------------------------------------------------------------->
+      mainMaterial:
+        description: |
+          This is the Main Material used in the production of an ArticleSimple
+          described in terms of colors by this ArticleConfig. The List of available
+          MainMaterials is provided by Zalando Partner Masterdata. Expects the Material Code
+          to be provided here.
+        type: object
+        properties:
+          materialLocation:
+            type: string
+          code:
+            type: string
+            minLength: 3
+            maxLength: 3
+            pattern: /[0-9]{3,3}/
+
+      additionalColorCodes:
+        description: |
+          These are the color codes of the colors most (ordered by most used) used on the        respective
+          article simples found in this ArticleConfig instance. Optional. Must be set if the
+          ArticleSimples of this ArticleConfig utilize more than one Color.
+        type: array
+        items:
+          type: string
+          minLength: 3
+          maxLength: 3
+          pattern: /[0-9]{3,3}/
+        maxItems: 2
+  Links:
+    type: object
+    description: Links response
+    properties:
+      self:
+        description: The link that generated the current response document
+        type: string
+      related:
+        description: A related resource link when the primary data represents a resource relationship
+        type: string
+
+  Meta:
+    type: object
+    description: Meta
+    properties:
+      copyright:
+        description: Zalando SE Copyright notice
+        type: string
+
+  ErrorSource:
+    type: object
+    description: Indicate the source of error
+    properties:
+      pointer:
+        description: A JSON Pointer [RFC6901] to the associated entity in the request document [e.g. "/data" for a primary data object, or "/data/attributes/title" for a specific attribute].
+        type: string
+      parameter:
+        description: A string indicating which URI query parameter caused the error.
+        type: string
+
+  Error:
+    type: object
+    description: Error object
+    properties:
+      status:
+       description: The HTTP status code applicable to this p roblem, expressed as a string value.
+       type: string
+      code:
+       description: An application-specific error code, expressed as a string value.
+       type: string
+      title:
+       description: A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrenc of the problem, except for purposes of localization.
+       type: string
+      detail:
+       description: A human-readable explanation specific to this occurrence of the problem.
+       type: string
+      source:
+       description: An object containing references to the source of the error
+       $ref: '#/definitions/ErrorSource'
+
+  Errors:
+    type: object
+    description: Array of error objects
+    properties:
+      errors:
+        description: All errors
+        type: array
+        items:
+          $ref: '#/definitions/Error'
+
+
