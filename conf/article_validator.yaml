@@ -18,6 +18,16 @@ paths:
           schema:
             $ref: "#/definitions/ModelSchemaRoot"
 
+  /schema/config:
+    get:
+      responses:
+        200:
+          description: |
+            Schema representing sales channel and merchant
+            specific structure and valid values for configs to create articles with.
+          schema:
+            $ref: "#/definitions/ConfigSchemaRoot"
+
 definitions:
 
   ModelSchemaRoot:
@@ -195,6 +205,7 @@ definitions:
         type: string
         pattern: /([\w\s]{1,255}|([\w\s]{1,255}, )+[\w\s]{1,255})/
       description:
+        description: Product description
         type: string
       specialDescriptions:
         type: array
@@ -463,10 +474,9 @@ definitions:
             minLength: 3
             maxLength: 3
             pattern: /[0-9]{3,3}/
-
       additionalColorCodes:
         description: |
-          These are the color codes of the colors most (ordered by most used) used on the        respective
+          These are the color codes of the colors most (ordered by most used) used on the respective
           article simples found in this ArticleConfig instance. Optional. Must be set if the
           ArticleSimples of this ArticleConfig utilize more than one Color.
         type: array
@@ -476,6 +486,26 @@ definitions:
           maxLength: 3
           pattern: /[0-9]{3,3}/
         maxItems: 2
+      articleConfigAttributes:
+        description: |
+          Collection of Product
+          Attributes - if present at least one
+          Attribute is
+          required
+        type: array
+        items:
+          description: |
+            Single Attribute. Contains both a key as an attribute and
+            its value as a String. Key Value pairs provided as Attributes must match
+            the ArticleModel's Zalando Silhouette.
+          type: object
+          properties:
+            key:
+              type: string
+            value:
+              type: string
+        minItems: 1
+
   Links:
     type: object
     description: Links response
