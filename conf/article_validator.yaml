@@ -28,21 +28,27 @@ paths:
           schema:
             $ref: "#/definitions/ConfigSchemaRoot"
 
+  /schema/simple:
+    get:
+      responses:
+        200:
+          description: |
+            Schema representing sales channel and merchant
+            specific structure and valid values for simples to create articles with.
+          schema:
+            $ref: "#/definitions/SimpleSchemaRoot"
+
 definitions:
 
   ModelSchemaRoot:
     type: object
     description: Representation of a schema for a model
+    allOf:
+    - $ref: '#/definitions/Root'
     properties:
       data:
         description: The schema object
         $ref: '#/definitions/ModelSchema'
-      meta:
-        description: Meta object
-        $ref: '#/definitions/Meta'
-      links:
-        description: Links
-        $ref: '#/definitions/Links'
 
   ModelSchema:
     type: object
@@ -224,16 +230,12 @@ definitions:
   ConfigSchemaRoot:
     type: object
     description: Representation of a schema for the config level of an article
+    allOf:
+    - $ref: '#/definitions/Root'
     properties:
       data:
         description: The schema object
         $ref: '#/definitions/ConfigSchema'
-      meta:
-        description: Meta object
-        $ref: '#/definitions/Meta'
-      links:
-        description: Links
-        $ref: '#/definitions/Links'
 
   ConfigSchema:
     type: object
@@ -506,6 +508,22 @@ definitions:
               type: string
         minItems: 1
 
+  SimpleSchemaRoot:
+    description: Root object representation of a simple schema
+    allOf:
+    - $ref: '#/definitions/Root'
+    type: object
+    properties:
+      data:
+        description: The schema object
+        $ref: '#/definitions/SimpleSchema'
+
+  SimpleSchema:
+    type: object
+    description: stuff
+    properties:
+      stuff:
+        type: string
   Links:
     type: object
     description: Links response
@@ -516,6 +534,20 @@ definitions:
       related:
         description: A related resource link when the primary data represents a resource relationship
         type: string
+
+  Root:
+    type: object
+    description: Abstract JSON-api root object that only needs the data property to be compliant
+    properties:
+      meta:
+        description: Meta object
+        $ref: '#/definitions/Meta'
+      links:
+        description: Links
+        $ref: '#/definitions/Links'
+      errors:
+        description: Errors collection
+        $ref: '#/definitions/Errors'
 
   Meta:
     type: object
