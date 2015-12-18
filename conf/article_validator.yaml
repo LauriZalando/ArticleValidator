@@ -496,16 +496,7 @@ definitions:
           required
         type: array
         items:
-          description: |
-            Single Attribute. Contains both a key as an attribute and
-            its value as a String. Key Value pairs provided as Attributes must match
-            the ArticleModel's Zalando Silhouette.
-          type: object
-          properties:
-            key:
-              type: string
-            value:
-              type: string
+          $ref: '#/definitions/SilhouetteKeyValuePairs'
         minItems: 1
 
   SimpleSchemaRoot:
@@ -520,10 +511,139 @@ definitions:
 
   SimpleSchema:
     type: object
-    description: stuff
+    description: |
+      Schema representation of an article simple: a purchasable incarnation inheriting from model and config.
+    required:
+      - ean
+      - partnerArticleSimpleId
+      - partnerSKU
+      - size
     properties:
-      stuff:
+      # --- Required properties ------------------------------------------------------------------->
+      ean:
+        description: |
+          European Article
+          Number - EAN required for Matching
+          with Zalando
+          Inventory
+          MUST BE
+          GLOBALLY UNIQUE
         type: string
+        minLength: 11
+        maxLength: 13
+        pattern: /[0-9]*/
+      partnerArticleSimpleId:
+        description: |
+          External Article
+          Unique Identifier from Partner -
+          MUST BE GLOBALLY
+          UNIQUE
+          MUST BE
+          IMMUTABLE
+        type: string
+      partnerSKU:
+        description: |
+          External Article
+          Unique Identifier from Partner -
+          MUST BE GLOBALLY
+          UNIQUE
+        type: string
+      size:
+        type: string
+      # --- Optional properties ------------------------------------------------------------------->
+      length:
+        type: string
+        description: |
+          Length of
+          ArticleSimple - must match the
+          respective LengthGrid provided
+          on
+          ArticleModel
+      articleSimpleAttributes:
+        description: |
+          Collection of Product
+          Attributes - if present at least one
+          Attribute is
+          required
+        type: array
+        items:
+          $ref: '#/definitions/SilhouetteKeyValuePairs'
+
+      price:
+        type: object
+        required:
+          - currentSalesPrice
+        properties:
+          currentSalesPrice:
+            description: |
+              The
+              partners sales
+              price of
+              article.
+            type: integer
+            minimum: 1
+          previousSalesPrice:
+            description: |
+              The
+              recommended sales
+              price
+              as
+              provided by the
+              articles
+              manufacturer.
+            type: integer
+            minimum: 1
+          currency:
+            description: |
+              The
+              currency to be used
+              for
+              prices
+              given. Valid for
+              associated country only.
+              Must be
+              exaxtly 3
+              characters long and
+              contain
+              only
+              capitalized
+              alphabetic
+              characters
+            type: string
+            minLength: 3
+            maxLength: 3
+            pattern: /[A-Z]*/
+          vatCode:
+            description: |
+              The Value
+              Added Tax
+              (VAT) Type to
+              be
+              used for Country
+              specific price.
+            type: integer
+            enum:
+              - 100 # full tax rate country dependend
+              - 200 # reduced tax rate country dependend
+              - 300 # 0 tax rate - no value added tax
+      stock:
+        description: "Stock quantity of article simple"
+        type: integer
+        minimum: 0
+        maximum: 9999
+
+  SilhouetteKeyValuePairs:
+    description: |
+      Single Attribute. Contains both a key as an attribute and
+      its value as a String. Key Value pairs provided as Attributes must match
+      the ArticleModel's Zalando Silhouette.
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+
   Links:
     type: object
     description: Links response
